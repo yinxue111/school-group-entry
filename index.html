@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f8f5" />
+    <meta
+      name="description"
+      content="选择孩子所在学校，进入对应的学校家长群。"
+    />
+    <title>学校家长群入口</title>
+    <style>
+      :root {
+        --ink: #17231d;
+        --muted: #68756e;
+        --line: #dfe8e2;
+        --surface: #ffffff;
+        --accent: #246a4c;
+        --accent-deep: #185139;
+        --accent-soft: #e7f3ec;
+        --focus: rgba(36, 106, 76, 0.22);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-height: 100%;
+        background: #f4f8f5;
+      }
+
+      body {
+        min-height: 100vh;
+        min-height: 100svh;
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 8% 5%, rgba(206, 234, 219, 0.8), transparent 32rem),
+          radial-gradient(circle at 94% 88%, rgba(219, 237, 245, 0.82), transparent 30rem),
+          #f4f8f5;
+        font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button,
+      a {
+        font: inherit;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .page {
+        width: min(100% - 32px, 540px);
+        margin: 0 auto;
+        padding: max(34px, env(safe-area-inset-top)) 0
+          calc(32px + env(safe-area-inset-bottom));
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 38px;
+        color: var(--accent-deep);
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border-radius: 11px;
+        color: #fff;
+        background: var(--accent);
+        box-shadow: 0 8px 20px rgba(36, 106, 76, 0.2);
+      }
+
+      .brand-mark svg {
+        width: 21px;
+        height: 21px;
+      }
+
+      .intro {
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        max-width: 9em;
+        margin: 0;
+        font-size: clamp(36px, 10vw, 50px);
+        font-weight: 760;
+        letter-spacing: -0.045em;
+        line-height: 1.08;
+      }
+
+      .intro p {
+        max-width: 27em;
+        margin: 17px 0 0;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.75;
+      }
+
+      .form-panel {
+        padding: 22px;
+        border: 1px solid rgba(212, 226, 217, 0.94);
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: 0 18px 50px rgba(31, 71, 52, 0.08);
+        backdrop-filter: blur(14px);
+      }
+
+      .field-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin: 0 0 14px;
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .field-label span:last-child {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .school-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .school-option {
+        position: relative;
+        display: flex;
+        min-height: 76px;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 12px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        color: var(--ink);
+        background: var(--surface);
+        cursor: pointer;
+        transition:
+          border-color 180ms ease,
+          background-color 180ms ease,
+          color 180ms ease,
+          transform 180ms ease;
+      }
+
+      .school-option:hover {
+        border-color: #b8cfc1;
+        transform: translateY(-1px);
+      }
+
+      .school-option:active {
+        transform: scale(0.985);
+      }
+
+      .school-option:focus-within {
+        outline: 4px solid var(--focus);
+        outline-offset: 2px;
+      }
+
+      .school-option[aria-checked="true"] {
+        border-color: var(--accent);
+        color: var(--accent-deep);
+        background: var(--accent-soft);
+      }
+
+      .school-option input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .school-icon {
+        display: grid;
+        flex: 0 0 auto;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border-radius: 11px;
+        color: var(--accent);
+        background: #f1f6f3;
+        transition:
+          color 180ms ease,
+          background-color 180ms ease;
+      }
+
+      .school-option[aria-checked="true"] .school-icon {
+        color: #fff;
+        background: var(--accent);
+      }
+
+      .school-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .school-name {
+        min-width: 0;
+        font-size: 14px;
+        font-weight: 650;
+        line-height: 1.4;
+        text-align: left;
+      }
+
+      .check {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: grid;
+        width: 20px;
+        height: 20px;
+        place-items: center;
+        border-radius: 50%;
+        color: white;
+        background: var(--accent);
+        opacity: 0;
+        transform: scale(0.6);
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease;
+      }
+
+      .school-option[aria-checked="true"] .check {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .check svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      .action-area {
+        margin-top: 18px;
+      }
+
+      .group-button {
+        display: flex;
+        width: 100%;
+        min-height: 56px;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 14px 18px;
+        border: 0;
+        border-radius: 16px;
+        color: #fff;
+        background: var(--accent);
+        box-shadow: 0 10px 24px rgba(36, 106, 76, 0.2);
+        font-size: 16px;
+        font-weight: 700;
+        text-decoration: none;
+        transition:
+          background-color 180ms ease,
+          transform 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      .group-button:hover {
+        background: var(--accent-deep);
+        box-shadow: 0 12px 28px rgba(36, 106, 76, 0.25);
+      }
+
+      .group-button:active {
+        transform: scale(0.99);
+      }
+
+      .group-button:focus-visible {
+        outline: 4px solid var(--focus);
+        outline-offset: 3px;
+      }
+
+      .group-button[aria-disabled="true"] {
+        color: #8e9a93;
+        background: #e7ece8;
+        box-shadow: none;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      .group-button svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .helper {
+        margin: 13px 2px 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.65;
+        text-align: center;
+      }
+
+      .notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        margin: 24px 6px 0;
+        color: #64716a;
+        font-size: 13px;
+        line-height: 1.65;
+      }
+
+      .notice svg {
+        flex: 0 0 auto;
+        width: 17px;
+        height: 17px;
+        margin-top: 2px;
+        color: var(--accent);
+      }
+
+      @media (max-width: 420px) {
+        .page {
+          width: min(100% - 24px, 540px);
+          padding-top: max(24px, env(safe-area-inset-top));
+        }
+
+        .brand {
+          margin-bottom: 32px;
+        }
+
+        h1 {
+          font-size: 38px;
+        }
+
+        .intro p {
+          font-size: 15px;
+        }
+
+        .form-panel {
+          padding: 17px;
+          border-radius: 22px;
+        }
+
+        .school-grid {
+          gap: 8px;
+        }
+
+        .school-option {
+          min-height: 72px;
+          gap: 8px;
+          padding: 10px 9px;
+          border-radius: 14px;
+        }
+
+        .school-icon {
+          width: 30px;
+          height: 30px;
+          border-radius: 9px;
+        }
+
+        .school-name {
+          font-size: 13px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <div class="brand" aria-label="学校家长群入口">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path
+              d="M5.5 6.5h13a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-8l-4.5 3v-3h-.5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M8.2 12h.1m3.6 0h.1m3.6 0h.1"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </span>
+        <span>学校家长群入口</span>
+      </div>
+
+      <header class="intro">
+        <h1>选择学校<br />进入家长群</h1>
+        <p>请选择孩子实际就读的学校，再点击下方按钮加入对应家长群。</p>
+      </header>
+
+      <form class="form-panel" id="school-form">
+        <div class="field-label" id="school-label">
+          <span>孩子所在学校</span>
+          <span>请选择一项</span>
+        </div>
+
+        <div
+          class="school-grid"
+          role="radiogroup"
+          aria-labelledby="school-label"
+          id="school-options"
+        >
+          <label class="school-option" aria-checked="false">
+            <input
+              type="radio"
+              name="school"
+              value="新元小学"
+              data-url="https://work.weixin.qq.com/gm/b47a3327b5b1e53c9f67621b5a517499"
+            />
+            <span class="school-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 20h16M6 20V9l6-4 6 4v11M9.5 20v-4.5h5V20M9 11h.01M15 11h.01"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="school-name">新元小学</span>
+            <span class="check" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="m3.5 8.2 2.8 2.8 6.2-6.2"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </label>
+
+          <label class="school-option" aria-checked="false">
+            <input
+              type="radio"
+              name="school"
+              value="旭景小学"
+              data-url="https://work.weixin.qq.com/gm/3c9e87bd8b49b65750b4c4b9c149195c"
+            />
+            <span class="school-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 20h16M6 20V9l6-4 6 4v11M9.5 20v-4.5h5V20M9 11h.01M15 11h.01"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="school-name">旭景小学</span>
+            <span class="check" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="m3.5 8.2 2.8 2.8 6.2-6.2"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </label>
+
+          <label class="school-option" aria-checked="false">
+            <input
+              type="radio"
+              name="school"
+              value="羊城花园小学"
+              data-url="https://work.weixin.qq.com/gm/c210e0caadbe7f7fc9e8eeee91b2c2bf"
+            />
+            <span class="school-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 20h16M6 20V9l6-4 6 4v11M9.5 20v-4.5h5V20M9 11h.01M15 11h.01"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="school-name">羊城花园小学</span>
+            <span class="check" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="m3.5 8.2 2.8 2.8 6.2-6.2"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </label>
+
+          <label class="school-option" aria-checked="false">
+            <input
+              type="radio"
+              name="school"
+              value="车陂小学"
+              data-url="https://work.weixin.qq.com/gm/dd227a15378ccdef781625cb344780cd"
+            />
+            <span class="school-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 20h16M6 20V9l6-4 6 4v11M9.5 20v-4.5h5V20M9 11h.01M15 11h.01"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="school-name">车陂小学</span>
+            <span class="check" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="m3.5 8.2 2.8 2.8 6.2-6.2"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </label>
+
+          <label class="school-option" aria-checked="false">
+            <input
+              type="radio"
+              name="school"
+              value="东圃小学"
+              data-url="https://work.weixin.qq.com/gm/3c5a893f2b68ba9dc793d108be75ff5e"
+            />
+            <span class="school-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 20h16M6 20V9l6-4 6 4v11M9.5 20v-4.5h5V20M9 11h.01M15 11h.01"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="school-name">东圃小学</span>
+            <span class="check" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="m3.5 8.2 2.8 2.8 6.2-6.2"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </label>
+
+          <label class="school-option" aria-checked="false">
+            <input
+              type="radio"
+              name="school"
+              value="黄村小学"
+              data-url="https://work.weixin.qq.com/gm/5116dea084945673c3e6d7f22132d2d5"
+            />
+            <span class="school-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 20h16M6 20V9l6-4 6 4v11M9.5 20v-4.5h5V20M9 11h.01M15 11h.01"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="school-name">黄村小学</span>
+            <span class="check" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="m3.5 8.2 2.8 2.8 6.2-6.2"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </label>
+        </div>
+
+        <div class="action-area">
+          <a
+            class="group-button"
+            id="group-button"
+            href="#"
+            aria-disabled="true"
+            aria-describedby="action-helper"
+          >
+            <span id="button-text">请先选择学校</span>
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path
+                d="M4 10h12m-4.5-4.5L16 10l-4.5 4.5"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
+          <p class="helper" id="action-helper">选择后即可进入对应学校的家长群</p>
+        </div>
+      </form>
+
+      <p class="notice">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" />
+          <path
+            d="M12 10.8v5M12 7.5h.01"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span>请按孩子实际就读学校选择，避免误入其他学校群。</span>
+      </p>
+    </main>
+
+    <script>
+      const options = Array.from(document.querySelectorAll(".school-option"));
+      const button = document.getElementById("group-button");
+      const buttonText = document.getElementById("button-text");
+
+      options.forEach((option) => {
+        const input = option.querySelector("input");
+
+        input.addEventListener("change", () => {
+          if (!input.checked) return;
+
+          options.forEach((item) => {
+            const itemInput = item.querySelector("input");
+            item.setAttribute("aria-checked", String(itemInput.checked));
+          });
+
+          button.href = input.dataset.url;
+          button.setAttribute("aria-disabled", "false");
+          buttonText.textContent = `进入${input.value}家长群`;
+        });
+      });
+
+      button.addEventListener("click", (event) => {
+        if (button.getAttribute("aria-disabled") === "true") {
+          event.preventDefault();
+        }
+      });
+    </script>
+  </body>
+</html>
